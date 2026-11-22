@@ -1,0 +1,7 @@
+portable/build/
+experiments/build/
+hip/build/
+__pycache__/
+*.pyc
+*.o
+*.profraw
