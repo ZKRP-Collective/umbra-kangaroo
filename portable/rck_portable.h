@@ -32,6 +32,7 @@ typedef struct {
     uint32_t selected_alternate;
 } rck_dual_result;
 
+extern uint64_t rck_mul_count;
 extern const rck_fe RCK_FIELD_P;
 extern const rck_point RCK_GENERATOR;
 

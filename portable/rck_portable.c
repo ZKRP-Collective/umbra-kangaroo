@@ -1,5 +1,8 @@
 #include "rck_portable.h"
 
+/* Field multiplications performed; incremented only with -DRCK_COUNT_MULS. */
+uint64_t rck_mul_count;
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -329,6 +332,9 @@ static void fe_mul_64(
     #endif
 
     reduce_product_64(out, product);
+#if defined(RCK_COUNT_MULS)
+    ++rck_mul_count;
+#endif
 }
 
 #endif

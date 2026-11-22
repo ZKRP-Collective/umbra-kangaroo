@@ -1420,7 +1420,7 @@ int main(int argc, char** argv) {
         " alt-eval=%" PRIu64 " alt-selected=%" PRIu64
         " second-jump-eval=%" PRIu64
         " second-jump-selected=%" PRIu64
-        " loop-escapes=%" PRIu64 "\n",
+        " loop-escapes=%" PRIu64 " muls=%" PRIu64 "\n",
         stats.steps,
         (double)stats.steps / (double)root,
         stats.distinguished,
@@ -1430,7 +1430,7 @@ int main(int argc, char** argv) {
         stats.alternate_selections,
         stats.second_jump_evaluations,
         stats.second_jump_selections,
-        stats.loop_escapes
+        stats.loop_escapes, rck_mul_count
     );
     if (!status) {
         puts("not found");

@@ -321,8 +321,8 @@ int main(int argc, char** argv) {
     }
 
     printf("steps=%" PRIu64 " K=%.6f dp=%" PRIu64 " restarts=%" PRIu64
-           " fruitless=%" PRIu64 " overlong=%" PRIu64 "\n",
-           steps, (double)steps / (double)root, dps, restarts, fruitless, overlong);
+           " fruitless=%" PRIu64 " overlong=%" PRIu64 " muls=%" PRIu64 "\n",
+           steps, (double)steps / (double)root, dps, restarts, fruitless, overlong, rck_mul_count);
     if (!solved) {
         puts("not found");
         return 1;

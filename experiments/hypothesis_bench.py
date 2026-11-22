@@ -1,7 +1,8 @@
 """Paired real-curve benchmark of range_solver/gs_solver variants.
 
 usage: python3 -I experiments/hypothesis_bench.py REPO_ROOT BITS TARGETS OUT.csv BIN:MODE,...
-Binaries are read from REPO_ROOT/bins/. For gs_solver binaries, MODE is DP_BITS.
+Binaries are read from REPO_ROOT/bins/ (build with -DRCK_COUNT_MULS for mul counts).
+For gs_solver binaries, MODE is DP_BITS.
 """
 import csv, random, re, subprocess, sys, time, statistics as st
 from concurrent.futures import ThreadPoolExecutor
@@ -28,7 +29,7 @@ def run(job):
     m = dict(M.findall(r.stdout))
     ok = m.get("private") == "%064x" % k
     return dict(bin=b, mode=mode, seed=seed, ok=int(ok), steps=int(m.get("steps", 0)),
-                K=float(m.get("K", 0)), alt=int(m.get("alt-eval", 0)), shadow=int(m.get("shadow", 0)), esc=int(m.get("loop-escapes", 0)), dp=int(m.get("dp", 0)), wall=dt)
+                K=float(m.get("K", 0)), alt=int(m.get("alt-eval", 0)), shadow=int(m.get("shadow", 0)), esc=int(m.get("loop-escapes", 0)), dp=int(m.get("dp", 0)), muls=int(m.get("muls", 0)), wall=dt)
 
 jobs = [(b, mo, t) for b, mo in configs for t in targets]
 with ThreadPoolExecutor(int(__import__('os').environ.get('J','15'))) as ex:
@@ -41,4 +42,4 @@ for b, mo in configs:
     ws = [r["wall"] for r in rs if r["ok"]]
     se = st.stdev(ks) / len(ks) ** 0.5 if len(ks) > 1 else 0
     print(f"{b:12} {mo:12} solved={sum(r['ok'] for r in rs)}/{len(rs)} meanK={st.mean(ks):.3f}±{se:.3f} "
-          f"medK={st.median(ks):.3f} alt/step={st.mean(r['alt']/max(r['steps'],1) for r in rs):.2f} esc/step={st.mean(r['esc']/max(r['steps'],1) for r in rs):.4f} Kfull={st.mean((r['steps']+r['esc'])/2**(BITS/2) for r in rs if r['ok']):.3f} ns/step={1e9*sum(ws)/sum(r['steps']+r['esc'] for r in rs if r['ok']):.0f} dp+shadow={st.mean(r['dp']+r['shadow'] for r in rs):.0f}")
+          f"medK={st.median(ks):.3f} alt/step={st.mean(r['alt']/max(r['steps'],1) for r in rs):.2f} esc/step={st.mean(r['esc']/max(r['steps'],1) for r in rs):.4f} Kfull={st.mean((r['steps']+r['esc'])/2**(BITS/2) for r in rs if r['ok']):.3f} ns/step={1e9*sum(ws)/sum(r['steps']+r['esc'] for r in rs if r['ok']):.0f}  Mmul/sqrtN={st.mean(r["muls"]/2**(BITS/2) for r in rs if r["ok"]):.2f} mul/step={sum(r["muls"] for r in rs)/sum(r["steps"]+r["esc"] for r in rs):.2f} dp+shadow={st.mean(r['dp']+r['shadow'] for r in rs):.0f}")
